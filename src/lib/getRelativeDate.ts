@@ -65,6 +65,13 @@ function getRelativeDate(date) {
         comparisonDate <= endOfLastWeek
       ) {
         return "Last " + dayNames[comparisonDate.getDay()];
+      } else if (
+        // If the date is within the current week, return the day name
+        comparisonDate >= startOfWeek &&
+        comparisonDate <= endOfWeek
+      ) {
+        // return just Tuesday, Wednesday, etc.
+        return dayNames[comparisonDate.getDay()];
       } else {
         return formatDate(comparisonDate);
       }

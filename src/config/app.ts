@@ -1,23 +1,23 @@
 interface AppConfig {
-    name: string,
-    github: {
-        title: string,
-        url: string
-    },
-    author: {
-        name: string,
-        url: string
-    },
+  name: string;
+  github: {
+    title: string;
+    url: string;
+  };
+  author: {
+    name: string;
+    url: string;
+  };
 }
 
 export const appConfig: AppConfig = {
-    name: "Guillemette.dev",
-    github: {
-        title: "React Shadcn Starter",
-        url: "https://github.com/hayyi2/react-shadcn-starter",
-    },
-    author: {
-        name: "hayyi",
-        url: "https://github.com/hayyi2/",
-    }
-}
+  name: "Guillemette.dev",
+  github: {
+    title: "Michael Guillemette",
+    url: "https://github.com/mjguillemette",
+  },
+  author: {
+    name: "mjguillemette",
+    url: "https://github.com/mjguillemette",
+  },
+};

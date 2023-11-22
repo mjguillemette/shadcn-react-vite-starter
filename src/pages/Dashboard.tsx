@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import {
   Card,
+  CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -12,115 +14,186 @@ import getRelativeDate from "@/lib/getRelativeDate";
 import { Separator } from "@/components/ui/separator";
 import { DirectionButton } from "@/components/ui/direction-button";
 import { Button } from "@/components/ui/button";
+import TodoList from "@/components/ui/todo-list";
 import { isToday } from "date-fns";
+import { BookmarkIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
 
 export default function Dashboard() {
-  const [date, setDate] = useState(new Date()); // Initialize with the current date
+  const [date, setDate] = useState(new Date());
   const [dailyText, setDailyText] = useState("");
   const [todos, setTodos] = useState([]);
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // New state to track initial loading
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [bookmarkDates, setBookmarkDates] = useState([]);
 
-  const relativeDate = date ? getRelativeDate(date) : "Invalid Date";
+  useEffect(() => {
+    const storedDates = JSON.parse(
+      localStorage.getItem("bookmarkDates") || "[]"
+    );
+    setBookmarkDates(storedDates);
+  }, []);
 
-  // Format the date into a string key for localStorage
-  const formatDateString = (date: Date) => {
+  useEffect(() => {
+    if (!isInitialLoad) {
+      localStorage.setItem("bookmarkDates", JSON.stringify(bookmarkDates));
+    }
+  }, [bookmarkDates, isInitialLoad]);
+
+  const relativeDate = date ? getRelativeDate(date) : "Today";
+
+  const formatDateString = (date) => {
+    if (!date || date === null) date = new Date();
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   };
 
-  const localStorageKey = formatDateString(date || new Date());
+  const localStorageKey = formatDateString(date);
 
-  console.log(
-    "Component Mounted/Rendered. Current localStorageKey:",
-    localStorageKey
-  );
-
-  // Load data from localStorage
   useEffect(() => {
-    console.log(
-      "Attempting to load data from localStorage for key:",
-      localStorageKey
-    );
     const storedData = JSON.parse(
       localStorage.getItem(localStorageKey) || "{}"
     );
-    console.log("Retrieved data from localStorage:", storedData);
-
     setDailyText(storedData.text || "");
     setTodos(storedData.todos || []);
-
-    setIsInitialLoad(false); // Set loading to false after initial data load
+    setIsInitialLoad(false);
   }, [localStorageKey]);
 
   useEffect(() => {
     if (!isInitialLoad) {
-      // Only save to localStorage if it's not the initial load
       const data = JSON.stringify({ text: dailyText, todos });
       localStorage.setItem(localStorageKey, data);
-      console.log(
-        "Saved data to localStorage for key:",
-        localStorageKey,
-        "Data:",
-        data
-      );
     }
-  }, [dailyText, todos, localStorageKey]);
+  }, [dailyText, todos, localStorageKey, isInitialLoad]);
 
   const handleTextChange = (e) => {
     setDailyText(e.target.value);
-    console.log("Text changed:", e.target.value);
   };
+
+  const addTodo = (text) => {
+    const newTodo = { id: generateId(), text, completed: false };
+    setTodos([...todos, newTodo]);
+  };
+
+  const removeTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const toggleTodo = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
+
+  const generateId = () => {
+    return Math.random().toString(36).substr(2, 9);
+  };
+
   return (
     <>
       <PageHeader>
-        <PageHeaderHeading></PageHeaderHeading>
+        <PageHeaderHeading />
       </PageHeader>
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-row">
+            <div className="flex-col">
+              <CardTitle className="text-lg">{relativeDate}</CardTitle>
+              <CardDescription>
+                Idea - maybe get a quote or date fact here
+              </CardDescription>
+            </div>
+
+            <Button
+              className="ml-auto"
+              style={{
+                border: bookmarkDates.includes(formatDateString(date))
+                  ? "none"
+                  : "1px solid #00000010",
+                transform: bookmarkDates.includes(formatDateString(date))
+                  ? "translateY(-2.46em) scale(1.8)"
+                  : "none",
+                transition: "all 0.2s ease",
+              }}
+              size="icon"
+              variant={
+                bookmarkDates.includes(formatDateString(date))
+                  ? "filled"
+                  : "outline"
+              }
+              onClick={() => {
+                const newBookmarkDates = bookmarkDates.includes(
+                  formatDateString(date)
+                )
+                  ? bookmarkDates.filter(
+                      (bookmarkDate) => bookmarkDate !== formatDateString(date)
+                    )
+                  : [...bookmarkDates, formatDateString(date)];
+                setBookmarkDates(newBookmarkDates);
+              }}
+            >
+              {bookmarkDates.includes(formatDateString(date)) ? (
+                <BookmarkFilledIcon />
+              ) : (
+                <BookmarkIcon />
+              )}
+            </Button>
+          </div>
+        </CardHeader>
+        <Separator />
+        <CardContent className="py-4">
+          <div className="flex flex-row items-center justify-between ">
             <DirectionButton
               direction="left"
               onClick={() => {
-                // set date to previous day
-                const newDate = new Date(date || new Date());
+                const newDate = new Date(date);
                 newDate.setDate(newDate.getDate() - 1);
                 setDate(newDate);
               }}
-            ></DirectionButton>
-            {/* container to group date picker and today button */}
-            <div className="flex items-center justify-center">
+            />
+            <div className="flex items-center justify-center mx-2">
               {date && !isToday(date) && (
-                <Button variant="outline" onClick={() => setDate(new Date())}>
+                <Button
+                  variant="outline"
+                  className="mr-2"
+                  onClick={() => setDate(new Date())}
+                >
                   Today
                 </Button>
               )}
-              <DatePicker
-                date={date || new Date()}
-                setDate={setDate}
-              ></DatePicker>
+              <DatePicker date={date} setDate={setDate} />
             </div>
             <DirectionButton
               direction="right"
               onClick={() => {
-                // set date to next day
-                const newDate = new Date(date || new Date());
+                const newDate = new Date(date);
                 newDate.setDate(newDate.getDate() + 1);
                 setDate(newDate);
               }}
-            ></DirectionButton>
+            />
           </div>
-          <Separator className="my-5"></Separator>
-          <CardTitle>{relativeDate}</CardTitle>
-          <CardDescription>
-            Idea - maybe get a quote or date fact here
-          </CardDescription>
-          <Textarea
-            className="w-full h-32 p-2 rounded-md"
-            placeholder="What's on your mind?"
-            value={dailyText}
-            onChange={handleTextChange}
-          ></Textarea>
-        </CardHeader>
-        <CardDescription></CardDescription>
+        </CardContent>
+        <Separator />
+        <CardContent>
+          <TodoList
+            todos={todos}
+            onAdd={addTodo}
+            onRemove={removeTodo}
+            onToggle={toggleTodo}
+            relativeDate={relativeDate}
+          />
+        </CardContent>
+        <Separator />
+        <CardContent>
+          <div className="flex-col pt-4 w-full">
+            Notes:
+            <Textarea
+              className="w-full h-32 rounded-md"
+              placeholder="What's on your mind?"
+              value={dailyText}
+              onChange={handleTextChange}
+            />
+          </div>
+        </CardContent>
       </Card>
     </>
   );

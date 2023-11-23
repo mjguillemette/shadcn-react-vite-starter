@@ -8,7 +8,7 @@ export default defineConfig(({ command }) => {
   const isProd = command === "build";
 
   return {
-    base: isProd ? basenameProd : "/",
+    base: isProd ? basenameProd : "",
     plugins: [react()],
     resolve: {
       alias: {
@@ -17,7 +17,7 @@ export default defineConfig(({ command }) => {
     },
     define: {
       global: {
-        basename: isProd ? basenameProd : "/",
+        basename: isProd ? basenameProd : "",
       },
     },
   };

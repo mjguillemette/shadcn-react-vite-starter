@@ -9,7 +9,6 @@ export interface TodoItem {
   id: string;
   text: string;
   completed: boolean;
-  children?: TodoItem[];
 }
 
 interface TodoListProps {
@@ -53,7 +52,6 @@ const TodoList: React.FC<TodoListProps> = ({
           key={todo.id}
           text={todo.text}
           completed={todo.completed}
-          children={todo.children}
           onRemove={() => onRemove(todo.id)}
           onToggle={() => onToggle(todo.id)}
         />

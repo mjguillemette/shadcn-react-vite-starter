@@ -17,13 +17,15 @@ import { Button } from "@/components/ui/button";
 import TodoList from "@/components/ui/todo-list";
 import { isToday } from "date-fns";
 import { BookmarkIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
+import { TodoItem } from "@/components/ui/todo-list";
+import { SelectSingleEventHandler } from "react-day-picker";
 
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
   const [dailyText, setDailyText] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<TodoItem[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [bookmarkDates, setBookmarkDates] = useState([]);
+  const [bookmarkDates, setBookmarkDates] = useState<string[]>([]);
 
   useEffect(() => {
     const storedDates = JSON.parse(
@@ -40,7 +42,7 @@ export default function Dashboard() {
 
   const relativeDate = date ? getRelativeDate(date) : "Today";
 
-  const formatDateString = (date) => {
+  const formatDateString = (date: Date) => {
     if (!date || date === null) date = new Date();
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   };
@@ -63,25 +65,33 @@ export default function Dashboard() {
     }
   }, [dailyText, todos, localStorageKey, isInitialLoad]);
 
-  const handleTextChange = (e) => {
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDailyText(e.target.value);
   };
 
-  const addTodo = (text) => {
+  const addTodo = (text: string) => {
     const newTodo = { id: generateId(), text, completed: false };
     setTodos([...todos, newTodo]);
   };
 
-  const removeTodo = (id) => {
+  const removeTodo = (id: string) => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
 
-  const toggleTodo = (id) => {
+  const toggleTodo = (id: string) => {
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       )
     );
+  };
+
+  const handleDateChange: SelectSingleEventHandler = (
+    newDate: Date | undefined
+  ) => {
+    if (newDate) {
+      setDate(newDate);
+    }
   };
 
   const generateId = () => {
@@ -160,7 +170,7 @@ export default function Dashboard() {
                   Today
                 </Button>
               )}
-              <DatePicker date={date} setDate={setDate} />
+              <DatePicker date={date} setDate={handleDateChange} />
             </div>
             <DirectionButton
               direction="right"

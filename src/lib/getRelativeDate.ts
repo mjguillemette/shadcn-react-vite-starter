@@ -1,4 +1,4 @@
-function getRelativeDate(date) {
+function getRelativeDate(date: Date) {
   if (!(date instanceof Date)) {
     throw new Error("Invalid date provided to getRelativeDate");
   }

@@ -19,6 +19,7 @@ import { isToday } from "date-fns";
 import { BookmarkIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
 import { TodoItem } from "@/components/ui/todo-list";
 import { SelectSingleEventHandler } from "react-day-picker";
+import { ResetIcon } from "@radix-ui/react-icons";
 
 export default function Dashboard() {
   const [date, setDate] = useState(new Date());
@@ -165,9 +166,10 @@ export default function Dashboard() {
                 <Button
                   variant="outline"
                   className="mr-2"
+                  size={"icon"}
                   onClick={() => setDate(new Date())}
                 >
-                  Today
+                  <ResetIcon />
                 </Button>
               )}
               <DatePicker date={date} setDate={handleDateChange} />

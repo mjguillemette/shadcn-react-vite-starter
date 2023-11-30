@@ -17,7 +17,7 @@ export const router = createBrowserRouter(
           element: <Dashboard />,
         },
         {
-          path: "dashboard/:date", // Route with date parameter
+          path: ":date",
           element: <Dashboard />,
         },
         {

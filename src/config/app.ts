@@ -11,7 +11,7 @@ interface AppConfig {
 }
 
 export const appConfig: AppConfig = {
-  name: "Guillemette.dev",
+  name: "guillemette.dev",
   github: {
     title: "Michael Guillemette",
     url: "https://github.com/mjguillemette",

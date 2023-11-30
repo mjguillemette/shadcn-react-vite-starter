@@ -20,8 +20,11 @@ import { BookmarkIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
 import { TodoItem } from "@/components/ui/todo-list";
 import { SelectSingleEventHandler } from "react-day-picker";
 import { ResetIcon } from "@radix-ui/react-icons";
+import { useParams } from "react-router-dom";
+import { clear } from "console";
 
 export default function Dashboard() {
+  const params = useParams();
   const [date, setDate] = useState(new Date());
   const [dailyText, setDailyText] = useState("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
@@ -29,12 +32,26 @@ export default function Dashboard() {
   const [bookmarkDates, setBookmarkDates] = useState<string[]>([]);
 
   useEffect(() => {
+    const newUrlDate = params.date
+      ? new Date(params.date + "T00:00")
+      : new Date();
+    setDate(newUrlDate);
+
+    const localStorageKey = formatDateString(newUrlDate);
+    const storedData = JSON.parse(
+      localStorage.getItem(localStorageKey) || "{}"
+    );
+    setDailyText(storedData.text || "");
+    setTodos(storedData.todos || []);
+  }, [params.date]);
+
+  useEffect(() => {
     const storedDates = JSON.parse(
       localStorage.getItem("bookmarkDates") || "[]"
     );
     setBookmarkDates(storedDates);
-  }, []);
-
+  }, [date]);
+  console.log(bookmarkDates);
   useEffect(() => {
     if (!isInitialLoad) {
       localStorage.setItem("bookmarkDates", JSON.stringify(bookmarkDates));
@@ -44,8 +61,9 @@ export default function Dashboard() {
   const relativeDate = date ? getRelativeDate(date) : "Today";
 
   const formatDateString = (date: Date) => {
-    if (!date || date === null) date = new Date();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    return `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
   };
 
   const localStorageKey = formatDateString(date);

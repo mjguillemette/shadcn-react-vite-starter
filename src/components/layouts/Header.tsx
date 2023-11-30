@@ -24,6 +24,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import BookmarkedNavigation from "./Bookmarks";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -37,64 +38,72 @@ export function Header() {
             <Logo />
           </NavLink>
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            {mainMenu.map((menu, index) =>
-              menu.items !== undefined ? (
-                <DropdownMenu key={index}>
-                  <DropdownMenuTrigger
-                    className={cn(
-                      "flex items-center py-1 focus:outline-none text-sm font-medium transition-colors hover:text-primary",
-                      menu.items
-                        .filter((subitem) => subitem.to !== undefined)
-                        .map((subitem) => subitem.to)
-                        .includes(location.pathname)
-                        ? "text-foreground"
-                        : "text-foreground/60"
-                    )}
+            {mainMenu.map((menu, index) => {
+              if (menu.items !== undefined) {
+                return (
+                  <DropdownMenu key={index}>
+                    <DropdownMenuTrigger
+                      className={cn(
+                        "flex items-center py-1 focus:outline-none text-sm font-medium transition-colors hover:text-primary",
+                        menu.items
+                          .filter((subitem) => subitem.to !== undefined)
+                          .map((subitem) => subitem.to)
+                          .includes(location.pathname)
+                          ? "text-foreground"
+                          : "text-foreground/60"
+                      )}
+                    >
+                      {menu.title}
+                      <ChevronDownIcon className="ml-1 -mr-1 h-3 w-3 text-muted-foreground" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="w-48"
+                      align="start"
+                      forceMount
+                    >
+                      {menu.title === "Bookmarked" ? (
+                        <BookmarkedNavigation key={index} />
+                      ) : (
+                        menu.items.map((subitem, subindex) =>
+                          subitem.to !== undefined ? (
+                            <NavLink key={subindex} to={subitem.to}>
+                              <DropdownMenuItem
+                                className={cn("hover:cursor-pointer", {
+                                  "bg-muted": subitem.to === location.pathname,
+                                })}
+                              >
+                                {subitem.title}
+                              </DropdownMenuItem>
+                            </NavLink>
+                          ) : subitem.label ? (
+                            <DropdownMenuLabel key={subindex}>
+                              {subitem.title}
+                            </DropdownMenuLabel>
+                          ) : (
+                            <DropdownMenuSeparator key={subindex} />
+                          )
+                        )
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                );
+              } else {
+                return (
+                  <NavLink
+                    key={index}
+                    to={menu.to ?? ""}
+                    className={({ isActive }) =>
+                      cn(
+                        "text-sm font-medium transition-colors hover:text-primary",
+                        isActive ? "text-foreground" : "text-foreground/60"
+                      )
+                    }
                   >
                     {menu.title}
-                    <ChevronDownIcon className="ml-1 -mr-1 h-3 w-3 text-muted-foreground" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    className="w-48"
-                    align="start"
-                    forceMount
-                  >
-                    {menu.items.map((subitem, subindex) =>
-                      subitem.to !== undefined ? (
-                        <NavLink key={subindex} to={subitem.to}>
-                          <DropdownMenuItem
-                            className={cn("hover:cursor-pointer", {
-                              "bg-muted": subitem.to === location.pathname,
-                            })}
-                          >
-                            {subitem.title}
-                          </DropdownMenuItem>
-                        </NavLink>
-                      ) : subitem.label ? (
-                        <DropdownMenuLabel key={subindex}>
-                          {subitem.title}
-                        </DropdownMenuLabel>
-                      ) : (
-                        <DropdownMenuSeparator key={subindex} />
-                      )
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <NavLink
-                  key={index}
-                  to={menu.to ?? ""}
-                  className={({ isActive }) =>
-                    cn(
-                      "text-sm font-medium transition-colors hover:text-primary",
-                      isActive ? "text-foreground" : "text-foreground/60"
-                    )
-                  }
-                >
-                  {menu.title}
-                </NavLink>
-              )
-            )}
+                  </NavLink>
+                );
+              }
+            })}
           </nav>
         </div>
         {/* mobile */}
@@ -155,6 +164,10 @@ export function Header() {
                           <div className="flex">{menu.title}</div>
                         </AccordionTrigger>
                         <AccordionContent className="pb-1 pl-4">
+                          {/* If this is the bookmarks menu, use BookmarksNavigation */}
+                          {menu.title === "Bookmarked" ? (
+                            <BookmarkedNavigation />
+                          ) : null}
                           <div className="mt-1">
                             {menu.items.map((submenu, subindex) =>
                               submenu.to !== undefined ? (

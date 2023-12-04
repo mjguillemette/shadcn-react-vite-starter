@@ -16,6 +16,8 @@ interface TodoListProps {
   onAdd: (text: string) => void;
   onRemove: (id: string) => void;
   onToggle: (id: string) => void;
+  moveTodo: (id: string, direction: "up" | "down") => void;
+  setTodos: React.Dispatch<React.SetStateAction<TodoItem[]>>;
   relativeDate: string;
 }
 
@@ -25,6 +27,7 @@ const TodoList: React.FC<TodoListProps> = ({
   onRemove,
   onToggle,
   relativeDate,
+  setTodos,
 }: TodoListProps) => {
   const [newTodoText, setNewTodoText] = React.useState("");
   const [progress, setProgress] = React.useState(13);
@@ -43,6 +46,25 @@ const TodoList: React.FC<TodoListProps> = ({
     setNewTodoText("");
   };
 
+  const moveTodo = (id: string, direction: "up" | "down") => {
+    const index = todos.findIndex((todo) => todo.id === id);
+    if (
+      index < 0 ||
+      (direction === "up" && index === 0) ||
+      (direction === "down" && index === todos.length - 1)
+    ) {
+      return;
+    }
+
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    const newTodos = [...todos];
+    [newTodos[index], newTodos[newIndex]] = [
+      newTodos[newIndex],
+      newTodos[index],
+    ];
+    setTodos(newTodos);
+  };
+
   return (
     <div className="flex flex-col">
       <Progress value={progress} className="mt-4 mb-2" />
@@ -54,6 +76,8 @@ const TodoList: React.FC<TodoListProps> = ({
           completed={todo.completed}
           onRemove={() => onRemove(todo.id)}
           onToggle={() => onToggle(todo.id)}
+          onMoveUp={() => moveTodo(todo.id, "up")}
+          onMoveDown={() => moveTodo(todo.id, "down")}
         />
       ))}
       <div className="flex mt-2">

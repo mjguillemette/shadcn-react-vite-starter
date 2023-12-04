@@ -1,7 +1,13 @@
 import React from "react";
 import { Checkbox } from "./checkbox";
 import { Button } from "./button";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  Cross2Icon,
+} from "@radix-ui/react-icons";
 import {
   Tooltip,
   TooltipContent,
@@ -14,12 +20,27 @@ interface TodoProps {
   completed: boolean;
   onRemove: () => void;
   onToggle: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
 }
 
-const Todo: React.FC<TodoProps> = ({ text, onRemove, completed, onToggle }) => {
+const Todo: React.FC<TodoProps> = ({
+  text,
+  onRemove,
+  completed,
+  onToggle,
+  onMoveUp,
+  onMoveDown,
+}) => {
   const [textLengthThreshold, setTextLengthThreshold] = React.useState(50);
+  const [isIndented, setIsIndented] = React.useState(false);
+
   const handleToggle = () => {
     onToggle();
+  };
+
+  const toggleIndent = () => {
+    setIsIndented(!isIndented);
   };
 
   const baseThreshold = 50;
@@ -52,7 +73,11 @@ const Todo: React.FC<TodoProps> = ({ text, onRemove, completed, onToggle }) => {
     <TooltipProvider>
       <Tooltip>
         <div>
-          <div className="flex items-center justify-between space-x-2 flex-row w-full">
+          <div
+            className={`flex items-center justify-between space-x-2 flex-row w-full ${
+              isIndented ? "w-[96%] ml-auto" : ""
+            }`}
+          >
             <div className="flex flex-row items-center justify-start flex-grow w-9/12">
               <Checkbox id={text} checked={completed} onClick={handleToggle} />
               {isTextLong && (
@@ -71,6 +96,34 @@ const Todo: React.FC<TodoProps> = ({ text, onRemove, completed, onToggle }) => {
                 </div>
               </TooltipTrigger>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleIndent}
+              className="hover:opacity-100 opacity-20"
+            >
+              {isIndented ? (
+                <ChevronLeftIcon className="w-4 h-4" />
+              ) : (
+                <ChevronRightIcon className="w-4 h-4" />
+              )}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onMoveUp}
+              className="hover:opacity-100 opacity-20"
+            >
+              <ChevronUpIcon className="cursor-pointer" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onMoveDown}
+              className="hover:opacity-100 opacity-20"
+            >
+              <ChevronDownIcon className="cursor-pointer" />
+            </Button>
             <Button variant="ghost" size="icon" onClick={onRemove}>
               <Cross2Icon className="w-4 h-4" />
             </Button>

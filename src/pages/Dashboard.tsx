@@ -105,6 +105,25 @@ export default function Dashboard() {
     );
   };
 
+  const moveTodo = (id: string, direction: "up" | "down") => {
+    const index = todos.findIndex((todo) => todo.id === id);
+    if (
+      index < 0 ||
+      (direction === "up" && index === 0) ||
+      (direction === "down" && index === todos.length - 1)
+    ) {
+      return;
+    }
+
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    const newTodos = [...todos];
+    [newTodos[index], newTodos[newIndex]] = [
+      newTodos[newIndex],
+      newTodos[index],
+    ];
+    setTodos(newTodos);
+  };
+
   const handleDateChange: SelectSingleEventHandler = (
     newDate: Date | undefined
   ) => {
@@ -209,6 +228,8 @@ export default function Dashboard() {
             onAdd={addTodo}
             onRemove={removeTodo}
             onToggle={toggleTodo}
+            moveTodo={moveTodo}
+            setTodos={setTodos}
             relativeDate={relativeDate}
           />
         </CardContent>

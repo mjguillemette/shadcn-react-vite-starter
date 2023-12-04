@@ -74,11 +74,11 @@ const Todo: React.FC<TodoProps> = ({
       <Tooltip>
         <div>
           <div
-            className={`flex items-center justify-between space-x-2 flex-row w-full ${
-              isIndented ? "w-[96%] ml-auto" : ""
+            className={`flex items-center justify-between space-x-2 flex-row ${
+              isIndented ? "w-19/20 ml-auto" : ""
             }`}
           >
-            <div className="flex flex-row items-center justify-start flex-grow w-9/12">
+            <div className="flex flex-row items-center justify-start flex-grow">
               <Checkbox id={text} checked={completed} onClick={handleToggle} />
               {isTextLong && (
                 <TooltipContent className="w-80">

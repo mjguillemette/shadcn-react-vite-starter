@@ -2,12 +2,12 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-    './index.html',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+    "./index.html",
+  ],
   theme: {
     container: {
       center: true,
@@ -57,6 +57,27 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      width: {
+        "1/20": "5%",
+        "2/20": "10%",
+        "3/20": "15%",
+        "4/20": "20%",
+        "5/20": "25%",
+        "6/20": "30%",
+        "7/20": "35%",
+        "8/20": "40%",
+        "9/20": "45%",
+        "10/20": "50%",
+        "11/20": "55%",
+        "12/20": "60%",
+        "13/20": "65%",
+        "14/20": "70%",
+        "15/20": "75%",
+        "16/20": "80%",
+        "17/20": "85%",
+        "18/20": "90%",
+        "19/20": "95%",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },
@@ -74,4 +95,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

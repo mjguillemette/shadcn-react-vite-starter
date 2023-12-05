@@ -96,37 +96,40 @@ const Todo: React.FC<TodoProps> = ({
                 </div>
               </TooltipTrigger>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleIndent}
-              className="hover:opacity-100 opacity-20"
-            >
-              {isIndented ? (
-                <ChevronLeftIcon className="w-4 h-4" />
-              ) : (
-                <ChevronRightIcon className="w-4 h-4" />
-              )}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onMoveUp}
-              className="hover:opacity-100 opacity-20"
-            >
-              <ChevronUpIcon className="cursor-pointer" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onMoveDown}
-              className="hover:opacity-100 opacity-20"
-            >
-              <ChevronDownIcon className="cursor-pointer" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={onRemove}>
-              <Cross2Icon className="w-4 h-4" />
-            </Button>
+            <div className="flex space-x-2 md:w-auto w-20">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleIndent}
+                className="hover:opacity-100 opacity-20 w-6 h-6"
+              >
+                {isIndented ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onMoveUp}
+                className="hover:opacity-100 opacity-20 w-6 h-6"
+              >
+                <ChevronUpIcon />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onMoveDown}
+                className="hover:opacity-100 opacity-20 w-6 h-6"
+              >
+                <ChevronDownIcon />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onRemove}
+                className="hover:opacity-100 opacity-20 w-6 h-6"
+              >
+                <Cross2Icon />
+              </Button>
+            </div>
           </div>
         </div>
       </Tooltip>

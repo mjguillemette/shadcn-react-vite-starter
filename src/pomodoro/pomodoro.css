@@ -1,0 +1,15 @@
+.pomodoro-container {
+    margin-bottom: 2em;
+}
+
+.pomodoro-timer {
+    font-size: 3em;
+    color: #333;
+}
+
+.pomodoro-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2em;
+    max-width: 20em;
+}

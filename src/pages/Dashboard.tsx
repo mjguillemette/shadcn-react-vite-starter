@@ -18,6 +18,7 @@ import TodoList from "@/components/ui/todo-list";
 import { isToday } from "date-fns";
 import { BookmarkIcon, BookmarkFilledIcon } from "@radix-ui/react-icons";
 import { TodoItem } from "@/components/ui/todo-list";
+import Pomodoro from "@/pomodoro/Pomodoro";
 import { SelectSingleEventHandler } from "react-day-picker";
 import { ResetIcon } from "@radix-ui/react-icons";
 import { useParams } from "react-router-dom";
@@ -141,6 +142,7 @@ export default function Dashboard() {
       <PageHeader>
         <PageHeaderHeading />
       </PageHeader>
+      <Pomodoro />
       <Card>
         <CardHeader>
           <div className="flex flex-row">
